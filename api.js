@@ -70,14 +70,3 @@ api.get('/responses', (req, res) => {
 api.listen(port, () => {
     console.log("Server Listening on PORT:", port);
 });
-
-
-const test_filters = [
-	{
-		id: "fFnyxwWa3KV6nBdfBDCHEA",
-		condition: "greater_than",
-		value: "30",
-	}
-]
-
-const filters = encodeURIComponent(JSON.stringify(test_filters));
