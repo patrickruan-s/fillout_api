@@ -19,15 +19,20 @@ const compareToFilters = (response, filters) => {
       return false;
     }
   }
+
+  return true;
 }
 
 const filterResponse = (data, filters) => {
   if (filters.length == 0 || filters == null) { return data };
-  var newResponses = [];
+
+  const ret = [];
   data.responses.forEach((response) => {
-    if(compareToFilters(response, filters)) { newReponses.push(response) };
+    if(compareToFilters(response, filters)) { ret.push(response) };
   });
-  data.responses = newResponses;
+  data.responses = ret;
+  data.totalResponses = ret.length;
+  return data;
 }
 
 async function getFilloutData(filters) {
@@ -46,8 +51,10 @@ async function getFilloutData(filters) {
 }
 
 api.get('/cLZojxk94ous/filteredResponses', async (request, response) => {
+    const filters = request.query.filters;
     try {
-        responseFromFillout = await getFilloutData(request.query.filters);
+        const decodedFilters = decodeURIComponent(filters);
+        responseFromFillout = await getFilloutData(JSON.parse(decodedFilters));
         response.send(responseFromFillout);
       } catch (error) {
         console.error(error);
@@ -63,3 +70,14 @@ api.get('/responses', (req, res) => {
 api.listen(port, () => {
     console.log("Server Listening on PORT:", port);
 });
+
+
+const test_filters = [
+	{
+		id: "fFnyxwWa3KV6nBdfBDCHEA",
+		condition: "greater_than",
+		value: "30",
+	}
+]
+
+const filters = encodeURIComponent(JSON.stringify(test_filters));
